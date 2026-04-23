@@ -88,11 +88,6 @@ newCardCloseButton.addEventListener("click", () => {
   closeModal(newCardPopup);
 });
 
-//Establecer un detector de clics en el botón de cierre del nuevo modal para cerrarlo.
-imageCloseButton.addEventListener("click", () => {
-  closeModal(imagePopup);
-});
-
 // template de la tarjeta
 const cardTemplate = document
   .querySelector("#card-template")
@@ -150,6 +145,17 @@ const handleImageClick = (event) => {
   popupCaption.textContent = cardImage.alt;
 
   openModal(imagePopup);
+
+  // agegar un listener SOLO cunado se abre
+  imageCloseButton.addEventListener("click", handleImageCloseClick);
+};
+
+//nueva funcion para cerrar la imagen al hacer clic fuera de ella
+const handleImageCloseClick = () => {
+  closeModal(imagePopup);
+
+  // eliminar el listener al cerrar
+  imageCloseButton.removeEventListener("click", handleImageCloseClick);
 };
 //rear una función llamada renderCard() que tomará el nombre de la tarjeta, su enlace y el contenedor de la tarjeta como argumentos, y antepondrá el nuevo elemento creado con getCardElement() al contenedor HTML apropiado (en el que se ubicaron las tarjetas que estaban hardcoded).
 
