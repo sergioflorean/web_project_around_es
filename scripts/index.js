@@ -82,6 +82,12 @@ closeButton.addEventListener("click", () => {
 // popup para agregar nuevas tarjetas
 addButton.addEventListener("click", () => {
   openModal(newCardPopup);
+
+  toggleButtonState(cardInputList, newCardSaveButton);
+
+  cardInputList.forEach((input) => {
+    checkInputValidity(newCardForm, input);
+  });
 });
 // cerrar popup para agregar nuevas tarjetas
 newCardCloseButton.addEventListener("click", () => {
@@ -185,7 +191,12 @@ const handleOpenEditModal = () => {
   console.log("Abriendo modal de edición");
 
   fillProfileForm();
+  toggleButtonState(inputList, saveButton);
   openModal(editPopup);
+
+  inputList.forEach((input) => {
+    checkInputValidity(formElement, input);
+  });
 };
 
 //Implementa la función handleProfileFormSubmit().
@@ -222,3 +233,82 @@ const handleCardFormSubmit = (event) => {
 formElement.addEventListener("submit", handleProfileFormSubmit);
 //utiliza el método addEventListener() para detectar cuándo envía el usuario el formulario de nueva tarjeta y llama a la función handleCardFormSubmit().
 newCardForm.addEventListener("submit", handleCardFormSubmit);
+
+/// VALIDACIONES DEFORMULKARIOS
+
+const inputList = [nameInput, descriptionInput];
+const cardInputList = [cardNameInput, cardLinkInput];
+
+const hasInvalidInput = (inputList) => {
+  return inputList.some((input) => !input.validity.valid);
+};
+
+const toggleButtonState = (inputList, buttonElement) => {
+  buttonElement.disabled = hasInvalidInput(inputList);
+
+  if (buttonElement.disabled) {
+    buttonElement.classList.add("popup__button_disabled");
+  } else {
+    buttonElement.classList.remove("popup__button_disabled");
+  }
+};
+
+const saveButton = formElement.querySelector(".popup__button");
+const newCardSaveButton = newCardForm.querySelector(".popup__button");
+
+const showInputError = (form, inputElement, errorMessage) => {
+  const errorElement = form.querySelector(`.${inputElement.name}-error`);
+  errorElement.textContent = errorMessage;
+  inputElement.classList.add("popup__input_type_error");
+  errorElement.classList.add("popup__error_visible");
+};
+
+const hideInputError = (form, inputElement) => {
+  const errorElement = form.querySelector(`.${inputElement.name}-error`);
+  errorElement.textContent = "";
+  inputElement.classList.remove("popup__input_type_error");
+  errorElement.classList.remove("popup__error_visible");
+};
+
+const checkInputValidity = (form, inputElement) => {
+  if (!inputElement.validity.valid) {
+    showInputError(form, inputElement, inputElement.validationMessage);
+  } else {
+    hideInputError(form, inputElement);
+  }
+};
+
+inputList.forEach((input) => {
+  input.addEventListener("input", () => {
+    checkInputValidity(formElement, input);
+    toggleButtonState(inputList, saveButton);
+  });
+});
+
+cardInputList.forEach((input) => {
+  input.addEventListener("input", () => {
+    checkInputValidity(newCardForm, input);
+    toggleButtonState(cardInputList, newCardSaveButton);
+  });
+});
+
+const popups = document.querySelectorAll(".popup");
+
+popups.forEach((popup) => {
+  popup.addEventListener("click", (event) => {
+    // si el click fue directamente en el fondo (overlay)
+    if (event.target === event.currentTarget) {
+      closeModal(popup);
+    }
+  });
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    const openedPopup = document.querySelector(".popup_is-opened");
+
+    if (openedPopup) {
+      closeModal(openedPopup);
+    }
+  }
+});

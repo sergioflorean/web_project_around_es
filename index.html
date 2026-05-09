@@ -54,15 +54,25 @@
               class="popup__input popup__input_type_name"
               name="name"
               placeholder="Nombre"
+              required
+              minlength="2"
+              maxlength="40"
               type="text"
             />
+            <span class="popup__error name-error"></span>
             <input
               class="popup__input popup__input_type_description"
               name="description"
               placeholder="Acerca de mí"
+              required
+              minlength="2"
+              maxlength="200"
               type="text"
             />
-            <button class="button popup__button" type="submit">Guardar</button>
+            <span class="popup__error description-error"></span>
+            <button class="button popup__button" type="submit" disabled>
+              Guardar
+            </button>
           </form>
         </div>
       </div>
@@ -80,8 +90,11 @@
               name="place-name"
               placeholder="Título"
               required
+              minlength="2"
+              maxlength="30"
               type="text"
             />
+            <span class="popup__error place-name-error"></span>
             <input
               class="popup__input popup__input_type_url"
               name="link"
@@ -89,7 +102,10 @@
               required
               type="url"
             />
-            <button class="button popup__button" type="submit">Crear</button>
+            <span class="popup__error link-error"></span>
+            <button class="button popup__button" type="submit" disabled>
+              Crear
+            </button>
           </form>
         </div>
       </div>
@@ -123,6 +139,6 @@
         </div>
       </li>
     </template>
-    <script src="./scripts/index.js"></script>
+    <script type="module" src="./scripts/index.js"></script>
   </body>
 </html>
