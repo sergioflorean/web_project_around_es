@@ -32,7 +32,7 @@
 }
 
 /* clase para que el boton este disabled */
-.popup__button_disabled {
+.popup__button:disabled {
   background: white;
   cursor: default;
   border: 1px #9f9f9f solid;
