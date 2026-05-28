@@ -1,14 +1,14 @@
 export class FormValidator {
+    _config;
+    _formElement;
+    _inputList;
+    _buttonElement;
     constructor(config, formElement) {
-        // configuración
         this._config = config;
-        // formulario
         this._formElement = formElement;
-        // inputs y botón
         this._inputList = Array.from(this._formElement.querySelectorAll(this._config.inputSelector));
         this._buttonElement = this._formElement.querySelector(this._config.submitButtonSelector);
     }
-    // ---------------- PRIVATE METHODS ----------------
     _showInputError(inputElement, errorMessage) {
         const errorElement = this._formElement.querySelector(`.${inputElement.name}-error`);
         inputElement.classList.add(this._config.inputErrorClass);
@@ -51,7 +51,6 @@ export class FormValidator {
             });
         });
     }
-    // ---------------- PUBLIC METHODS ----------------
     enableValidation() {
         this._setEventListeners();
     }

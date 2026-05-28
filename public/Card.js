@@ -1,18 +1,23 @@
 export class Card {
+    _name;
+    _link;
+    _cardSelector;
+    _handleCardClick;
+    _element;
+    _imageElement;
+    _titleElement;
+    _likeButton;
+    _deleteButton;
     constructor(data, cardSelector, handleCardClick) {
-        // datos
         this._name = data.name;
         this._link = data.link;
-        // template
         this._cardSelector = cardSelector;
-        // callback para abrir imagen
         this._handleCardClick = handleCardClick;
     }
-    // ---------------- PRIVATE METHODS ----------------
     _getTemplate() {
-        const cardElement = document
-            .querySelector(this._cardSelector)
-            .content.querySelector(".card")
+        const template = document.querySelector(this._cardSelector);
+        const cardElement = template.content
+            .querySelector(".card")
             .cloneNode(true);
         return cardElement;
     }
@@ -33,18 +38,15 @@ export class Card {
             this._handleCardClick(this._name, this._link);
         });
     }
-    // ---------------- PUBLIC METHOD ----------------
     getView() {
         this._element = this._getTemplate();
         this._imageElement = this._element.querySelector(".card__image");
         this._titleElement = this._element.querySelector(".card__title");
         this._likeButton = this._element.querySelector(".card__like-button");
         this._deleteButton = this._element.querySelector(".card__delete-button");
-        // datos
         this._imageElement.src = this._link;
         this._imageElement.alt = this._name;
         this._titleElement.textContent = this._name;
-        // listeners
         this._setEventListeners();
         return this._element;
     }

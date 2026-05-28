@@ -9,7 +9,7 @@ import {
   closeModal,
   handleEscClose,
   handleOverlayClose,
-} from "./popup.js";
+} from "./popupold.js";
 
 console.log("🚀 index.js cargado correctamente");
 

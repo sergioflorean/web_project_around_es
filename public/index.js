@@ -1,5 +1,5 @@
 import { setEventListeners, toggleButtonState, resetValidation, } from "./validate.js";
-import { openModal, closeModal, handleEscClose, handleOverlayClose, } from "./popup.js";
+import { openModal, closeModal, handleEscClose, handleOverlayClose, } from "./popupold.js";
 console.log("🚀 index.js cargado correctamente");
 // ---------------- DATA ----------------
 const initialCards = [
