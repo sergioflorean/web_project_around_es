@@ -39,6 +39,13 @@
   color: #9f9f9f;
 }
 
+.popup__button_disabled {
+  background: white;
+  cursor: default;
+  border: 1px #9f9f9f solid;
+  color: #9f9f9f;
+}
+
 .popup__close {
   width: 35px;
   height: 35px;
