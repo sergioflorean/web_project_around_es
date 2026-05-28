@@ -7,3 +7,5 @@ This project is part of a web development learning process focused on connecting
 on this second stage
 
 In this stage of the project, we implemented the logic to edit the user profile using a popup form. We selected the necessary DOM elements, including the form, inputs, and profile display fields, and created reusable functions to open and close the modal. We also built a function to pre-fill the form with the current profile information and another handler function to update the profile text on the page when the form is submitted. Finally, we used the submit event listener on the form to capture user input, prevent the default page reload behavior, and dynamically update the profile information in real time.
+
+on may 28 im uploading a version git a stable version that works before i make the migration
