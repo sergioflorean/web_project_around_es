@@ -1,11 +1,35 @@
 # Tripleten web_project_around_es
 
-on this first stage
+## first stage
 
-This project is part of a web development learning process focused on connecting JavaScript to an HTML page and working with basic programming concepts. In this stage, an array called initialCards was created, containing six objects with a name and an image link. The project uses a forEach() method to loop through the array and display each card’s name in the browser console, helping to understand how to work with data before manipulating the DOM.
+This project is part of a web development learning process focused on connecting JavaScript to an HTML page and working with basic programming concepts. In this stage, an array called `initialCards` was created, containing six objects with a name and an image link. The project uses a forEach() method to loop through the array and render the cards on the page.
 
-on this second stage
+## second stage
 
-In this stage of the project, we implemented the logic to edit the user profile using a popup form. We selected the necessary DOM elements, including the form, inputs, and profile display fields, and created reusable functions to open and close the modal. We also built a function to pre-fill the form with the current profile information and another handler function to update the profile text on the page when the form is submitted. Finally, we used the submit event listener on the form to capture user input, prevent the default page reload behavior, and dynamically update the profile information in real time.
+In this stage of the project, the logic to edit the user profile using a popup form was implemented. DOM elements such as forms, inputs, and profile information were selected, and reusable functions were created to open and close the popup. The profile information can be updated dynamically without reloading the page.
 
-on may 28 im uploading a version git a stable version that works before i make the migration
+## third stage
+
+The functionality to create new cards, like cards, delete cards, and preview images in a popup was added. Form validation was also implemented to ensure that user input is valid before submitting the forms.
+
+## TypeScript and OOP refactor
+
+After building the project with JavaScript, I started refactoring it using TypeScript and Object-Oriented Programming. The code was reorganized into different classes so that each part of the application would have a clear responsibility and be easier to maintain.
+
+- Card is responsible for creating and managing individual cards.
+- Section handles displaying cards on the page.
+- Popup contains the functionality shared by all popup windows.
+- PopupWithImage is used to display image previews.
+- PopupWithForm handles forms inside popup windows.
+- FormValidator manages form validation and submit button states.
+- UserInfo handles displaying and updating the user's profile information.
+
+## Technologies used
+
+- HTML5
+- CSS3
+- JavaScript (ES6 Modules)
+- TypeScript
+- Object-Oriented Programming (OOP)
+- Git
+- GitHub
