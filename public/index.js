@@ -27,9 +27,23 @@ const api = new Api({
         "Content-Type": "application/json",
     },
 });
+// const createCard = (data: CardData): HTMLElement => {
+//   const card = new Card(data, "#card-template", (name, link) => {
+//     imagePopup.open(name, link);
+//   });
+//   return card.getView();
+// };
 const createCard = (data) => {
     const card = new Card(data, "#card-template", (name, link) => {
         imagePopup.open(name, link);
+    }, async (cardId, isLiked) => {
+        try {
+            const updatedCard = await api.changeLikeCardStatus(cardId, isLiked);
+            card.updateLikeStatus(updatedCard.isLiked);
+        }
+        catch (err) {
+            console.error("Error changing like status:", err);
+        }
     });
     return card.getView();
 };
@@ -38,19 +52,53 @@ const cardSection = new Section({
         cardSection.addItem(createCard(item));
     },
 }, ".cards__list");
-const editProfilePopup = new PopupWithForm("#edit-popup", (data) => {
-    userInfo.setUserInfo({
-        name: data.name,
-        job: data.description,
-    });
-    editProfilePopup.close();
+// const editProfilePopup = new PopupWithForm("#edit-popup", (data) => {
+//   userInfo.setUserInfo({
+//     name: data.name,
+//     job: data.description,
+//   });
+//   editProfilePopup.close();
+// });
+const editProfilePopup = new PopupWithForm("#edit-popup", async (inputValues) => {
+    try {
+        const data = {
+            name: inputValues.name,
+            about: inputValues.description,
+        };
+        const newUserData = await api.updateUserInfo(data);
+        userInfo.setUserInfo({
+            name: newUserData.name,
+            job: newUserData.about,
+            avatar: newUserData.avatar,
+        });
+        editProfilePopup.close();
+    }
+    catch (err) {
+        console.error("Error updating profile:", err);
+    }
 });
-const newCardPopup = new PopupWithForm("#new-card-popup", (data) => {
-    cardSection.addItem(createCard({
-        name: data["place-name"],
-        link: data.link,
-    }));
-    newCardPopup.close();
+// const newCardPopup = new PopupWithForm("#new-card-popup", (data) => {
+//   cardSection.addItem(
+//     createCard({
+//       name: data["place-name"],
+//       link: data.link,
+//     }),
+//   );
+//   newCardPopup.close();
+// });
+const newCardPopup = new PopupWithForm("#new-card-popup", async (inputValues) => {
+    try {
+        const data = {
+            name: inputValues["place-name"],
+            link: inputValues.link,
+        };
+        const newCard = await api.addCard(data);
+        cardSection.addItem(createCard(newCard));
+        newCardPopup.close();
+    }
+    catch (err) {
+        console.error("Error adding card:", err);
+    }
 });
 editButton.addEventListener("click", () => {
     const currentUserInfo = userInfo.getUserInfo();

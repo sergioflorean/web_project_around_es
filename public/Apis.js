@@ -23,4 +23,30 @@ export class Api {
         });
         return await this._handleResponse(res);
     }
+    async updateUserInfo(data) {
+        const res = await fetch(`${this._baseUrl}/users/me`, {
+            method: "PATCH",
+            headers: this._headers,
+            body: JSON.stringify(data),
+        });
+        return await this._handleResponse(res);
+    }
+    async addCard(data) {
+        const res = await fetch(`${this._baseUrl}/cards/`, {
+            method: "POST",
+            headers: this._headers,
+            body: JSON.stringify({
+                name: data.name,
+                link: data.link,
+            }),
+        });
+        return await this._handleResponse(res);
+    }
+    async changeLikeCardStatus(cardId, isLiked) {
+        const res = await fetch(`${this._baseUrl}/cards/${cardId}/likes`, {
+            method: isLiked ? "DELETE" : "PUT",
+            headers: this._headers,
+        });
+        return await this._handleResponse(res);
+    }
 }
