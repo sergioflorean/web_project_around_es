@@ -6,33 +6,10 @@ import { PopupWithForm } from "./PopupWithForm.js";
 import { UserInfo } from "./UserInfo.js";
 import { FormValidator } from "./FormValidator.js";
 import { defaultFormConfig } from "./utils/constants.js";
+import { Api } from "./Apis.js";
+import type { ApiUserData, ApiCardData } from "./Apis.js";
 
-const initialCards: CardData[] = [
-  {
-    name: "Valle de Yosemite",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_yosemite.jpg",
-  },
-  {
-    name: "Lago Louise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lake-louise.jpg",
-  },
-  {
-    name: "Montañas Calvas",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_bald-mountains.jpg",
-  },
-  {
-    name: "Latemar",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_latemar.jpg",
-  },
-  {
-    name: "Parque Nacional de la Vanoise",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_vanoise.jpg",
-  },
-  {
-    name: "Lago di Braies",
-    link: "https://practicum-content.s3.us-west-1.amazonaws.com/web-code/moved_lago.jpg",
-  },
-];
+
 
 const editButton = document.querySelector(".profile__edit-button") as HTMLButtonElement;
 const addButton = document.querySelector(".profile__add-button") as HTMLButtonElement;
@@ -48,10 +25,20 @@ const imagePopup = new PopupWithImage("#image-popup");
 const userInfo = new UserInfo({
   nameSelector: ".profile__title",
   jobSelector: ".profile__description",
+  avatarSelector: ".profile__image",
+
 });
 
 const editFormValidator = new FormValidator(defaultFormConfig, editForm);
 const newCardFormValidator = new FormValidator(defaultFormConfig, newCardForm);
+
+const api = new Api({
+  baseUrl: "https://around-api.es.tripleten-services.com/v1",
+  headers: {
+    authorization: "fb77c790-d10c-4d94-974d-1fba8ca79c2b",
+    "Content-Type": "application/json",
+  },
+});
 
 const createCard = (data: CardData): HTMLElement => {
   const card = new Card(data, "#card-template", (name, link) => {
@@ -61,9 +48,8 @@ const createCard = (data: CardData): HTMLElement => {
   return card.getView();
 };
 
-const cardSection = new Section<CardData>(
+const cardSection = new Section<ApiCardData>(
   {
-    items: initialCards,
     renderer: (item) => {
       cardSection.addItem(createCard(item));
     },
@@ -106,6 +92,29 @@ addButton.addEventListener("click", () => {
   newCardPopup.open();
 });
 
+
+
+const initApp = async (): Promise<void> => {
+  try {
+    const [userData, initialCards] = await Promise.all([
+      api.getUserInfo(),
+      api.getInitialCards(),
+    ]);
+
+    userInfo.setUserInfo({
+      name: userData.name,
+      job: userData.about,
+      avatar: userData.avatar,
+    });
+
+    cardSection.renderItems(initialCards);
+  } catch (err: unknown) {
+    console.error("Error initializing app:", err);
+  }
+};
+
+initApp();
+
 imagePopup.setEventListeners();
 editProfilePopup.setEventListeners();
 newCardPopup.setEventListeners();
@@ -113,4 +122,3 @@ newCardPopup.setEventListeners();
 editFormValidator.enableValidation();
 newCardFormValidator.enableValidation();
 
-cardSection.renderItems();
