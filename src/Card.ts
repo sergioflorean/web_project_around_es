@@ -2,20 +2,25 @@ export interface CardData {
   _id: string;
   name: string;
   link: string;
+  owner: string;
   isLiked: boolean;
 }
 
 type HandleCardClick = (name: string, link: string) => void;
 type HandleLikeClick = (cardId: string, isLiked: boolean) => void;
+type HandleDeleteClick = (cardId: string) => void;
 
 export class Card {
   private _id: string;
   private _name: string;
   private _link: string;
+  private _owner: string;
   private _isLiked: boolean;
+  private _currentUserId: string;
   private _cardSelector: string;
   private _handleCardClick: HandleCardClick;
   private _handleLikeClick: HandleLikeClick;
+  private _handleDeleteClick: HandleDeleteClick;
 
   private _element!: HTMLElement;
   private _imageElement!: HTMLImageElement;
@@ -26,16 +31,21 @@ export class Card {
   constructor(
     data: CardData,
     cardSelector: string,
+    currentUserId: string,
     handleCardClick: HandleCardClick,
     handleLikeClick: HandleLikeClick,
+    handleDeleteClick: HandleDeleteClick,
   ) {
     this._id = data._id;
     this._name = data.name;
     this._link = data.link;
+    this._owner = data.owner;
     this._isLiked = data.isLiked;
+    this._currentUserId = currentUserId;
     this._cardSelector = cardSelector;
     this._handleCardClick = handleCardClick;
     this._handleLikeClick = handleLikeClick;
+    this._handleDeleteClick = handleDeleteClick;
   }
 
   private _getTemplate(): HTMLElement {
@@ -58,18 +68,18 @@ export class Card {
     }
   }
 
-  private _handleDeleteButton(): void {
-    this._element.remove();
-  }
-
   private _setEventListeners(): void {
     this._likeButton.addEventListener("click", () => {
       this._handleLikeClick(this._id, this._isLiked);
     });
 
-    this._deleteButton.addEventListener("click", () => {
-      this._handleDeleteButton();
-    });
+    if (this._owner === this._currentUserId) {
+      this._deleteButton.addEventListener("click", () => {
+        this._handleDeleteClick(this._id);
+      });
+    } else {
+      this._deleteButton.remove();
+    }
 
     this._imageElement.addEventListener("click", () => {
       this._handleCardClick(this._name, this._link);
@@ -79,6 +89,10 @@ export class Card {
   public updateLikeStatus(isLiked: boolean): void {
     this._isLiked = isLiked;
     this._updateLikeButtonState();
+  }
+
+  public removeCard(): void {
+    this._element.remove();
   }
 
   public getView(): HTMLElement {

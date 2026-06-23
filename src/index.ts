@@ -7,6 +7,7 @@ import { UserInfo } from "./UserInfo.js";
 import { FormValidator } from "./FormValidator.js";
 import { defaultFormConfig } from "./utils/constants.js";
 import { Api } from "./Apis.js";
+import { PopupWithConfirmation } from "./PopupWitthConfirmation.js";
 import type { ApiUserData, ApiCardData } from "./Apis.js";
 
 
@@ -20,6 +21,7 @@ const newCardForm = document.querySelector("#new-card-form") as HTMLFormElement;
 const nameInput = editForm.querySelector(".popup__input_type_name") as HTMLInputElement;
 const jobInput = editForm.querySelector(".popup__input_type_description") as HTMLInputElement;
 
+const deleteCardPopup = new PopupWithConfirmation("#delete-card-popup");
 const imagePopup = new PopupWithImage("#image-popup");
 
 const userInfo = new UserInfo({
@@ -47,11 +49,12 @@ const api = new Api({
 
 //   return card.getView();
 // };
-
+let currentUserId = "";
 const createCard = (data: ApiCardData): HTMLElement => {
   const card = new Card(
     data,
     "#card-template",
+    currentUserId,
     (name, link) => {
       imagePopup.open(name, link);
     },
@@ -63,6 +66,20 @@ const createCard = (data: ApiCardData): HTMLElement => {
       } catch (err: unknown) {
         console.error("Error changing like status:", err);
       }
+    },
+    (cardId) => {
+      deleteCardPopup.setSubmitAction(async () => {
+        try {
+          await api.deleteCard(cardId);
+
+          card.removeCard();
+          deleteCardPopup.close();
+        } catch (err: unknown) {
+          console.error("Error deleting card:", err);
+        }
+      });
+
+      deleteCardPopup.open();
     },
   );
 
@@ -159,6 +176,8 @@ const initApp = async (): Promise<void> => {
       api.getInitialCards(),
     ]);
 
+    currentUserId = userData._id;
+
     userInfo.setUserInfo({
       name: userData.name,
       job: userData.about,
@@ -176,6 +195,7 @@ initApp();
 imagePopup.setEventListeners();
 editProfilePopup.setEventListeners();
 newCardPopup.setEventListeners();
+deleteCardPopup.setEventListeners();
 
 editFormValidator.enableValidation();
 newCardFormValidator.enableValidation();

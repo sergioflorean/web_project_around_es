@@ -37,6 +37,28 @@
         <section class="cards page__section">
           <ul class="cards__list"></ul>
         </section>
+        <section class="popup" id="delete-card-popup">
+          <div class="popup__content popup__content_type_delete">
+            <button
+              class="popup__close"
+              type="button"
+              aria-label="Cerrar"
+            ></button>
+            <h2 class="popup__title">¿Estás seguro/a?</h2>
+            <form
+              class="popup__form popup__form_type_delete"
+              name="delete-card-form"
+              novalidate
+            >
+              <button
+                class="popup__button popup__button_type_delete"
+                type="submit"
+              >
+                Sí
+              </button>
+            </form>
+          </div>
+        </section>
       </main>
       <footer class="footer page__section">
         <p class="footer__copyright">© 2025 Around The U.S.</p>
@@ -139,6 +161,7 @@
         </div>
       </li>
     </template>
+
     <script type="module" src="./index.js"></script>
   </body>
 </html>

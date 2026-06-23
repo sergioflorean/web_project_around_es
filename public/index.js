@@ -6,12 +6,14 @@ import { UserInfo } from "./UserInfo.js";
 import { FormValidator } from "./FormValidator.js";
 import { defaultFormConfig } from "./utils/constants.js";
 import { Api } from "./Apis.js";
+import { PopupWithConfirmation } from "./PopupWitthConfirmation.js";
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
 const editForm = document.querySelector("#edit-profile-form");
 const newCardForm = document.querySelector("#new-card-form");
 const nameInput = editForm.querySelector(".popup__input_type_name");
 const jobInput = editForm.querySelector(".popup__input_type_description");
+const deleteCardPopup = new PopupWithConfirmation("#delete-card-popup");
 const imagePopup = new PopupWithImage("#image-popup");
 const userInfo = new UserInfo({
     nameSelector: ".profile__title",
@@ -33,8 +35,9 @@ const api = new Api({
 //   });
 //   return card.getView();
 // };
+let currentUserId = "";
 const createCard = (data) => {
-    const card = new Card(data, "#card-template", (name, link) => {
+    const card = new Card(data, "#card-template", currentUserId, (name, link) => {
         imagePopup.open(name, link);
     }, async (cardId, isLiked) => {
         try {
@@ -44,6 +47,18 @@ const createCard = (data) => {
         catch (err) {
             console.error("Error changing like status:", err);
         }
+    }, (cardId) => {
+        deleteCardPopup.setSubmitAction(async () => {
+            try {
+                await api.deleteCard(cardId);
+                card.removeCard();
+                deleteCardPopup.close();
+            }
+            catch (err) {
+                console.error("Error deleting card:", err);
+            }
+        });
+        deleteCardPopup.open();
     });
     return card.getView();
 };
@@ -117,6 +132,7 @@ const initApp = async () => {
             api.getUserInfo(),
             api.getInitialCards(),
         ]);
+        currentUserId = userData._id;
         userInfo.setUserInfo({
             name: userData.name,
             job: userData.about,
@@ -132,5 +148,6 @@ initApp();
 imagePopup.setEventListeners();
 editProfilePopup.setEventListeners();
 newCardPopup.setEventListeners();
+deleteCardPopup.setEventListeners();
 editFormValidator.enableValidation();
 newCardFormValidator.enableValidation();

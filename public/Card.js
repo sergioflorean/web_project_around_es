@@ -2,23 +2,29 @@ export class Card {
     _id;
     _name;
     _link;
+    _owner;
     _isLiked;
+    _currentUserId;
     _cardSelector;
     _handleCardClick;
     _handleLikeClick;
+    _handleDeleteClick;
     _element;
     _imageElement;
     _titleElement;
     _likeButton;
     _deleteButton;
-    constructor(data, cardSelector, handleCardClick, handleLikeClick) {
+    constructor(data, cardSelector, currentUserId, handleCardClick, handleLikeClick, handleDeleteClick) {
         this._id = data._id;
         this._name = data.name;
         this._link = data.link;
+        this._owner = data.owner;
         this._isLiked = data.isLiked;
+        this._currentUserId = currentUserId;
         this._cardSelector = cardSelector;
         this._handleCardClick = handleCardClick;
         this._handleLikeClick = handleLikeClick;
+        this._handleDeleteClick = handleDeleteClick;
     }
     _getTemplate() {
         const template = document.querySelector(this._cardSelector);
@@ -35,16 +41,18 @@ export class Card {
             this._likeButton.classList.remove("card__like-button_is-active");
         }
     }
-    _handleDeleteButton() {
-        this._element.remove();
-    }
     _setEventListeners() {
         this._likeButton.addEventListener("click", () => {
             this._handleLikeClick(this._id, this._isLiked);
         });
-        this._deleteButton.addEventListener("click", () => {
-            this._handleDeleteButton();
-        });
+        if (this._owner === this._currentUserId) {
+            this._deleteButton.addEventListener("click", () => {
+                this._handleDeleteClick(this._id);
+            });
+        }
+        else {
+            this._deleteButton.remove();
+        }
         this._imageElement.addEventListener("click", () => {
             this._handleCardClick(this._name, this._link);
         });
@@ -52,6 +60,9 @@ export class Card {
     updateLikeStatus(isLiked) {
         this._isLiked = isLiked;
         this._updateLikeButtonState();
+    }
+    removeCard() {
+        this._element.remove();
     }
     getView() {
         this._element = this._getTemplate();
