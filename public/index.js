@@ -6,11 +6,13 @@ import { UserInfo } from "./UserInfo.js";
 import { FormValidator } from "./FormValidator.js";
 import { defaultFormConfig } from "./utils/constants.js";
 import { Api } from "./Apis.js";
-import { PopupWithConfirmation } from "./PopupWitthConfirmation.js";
+import { PopupWithConfirmation } from "./PopupWithConfirmation.js";
 const editButton = document.querySelector(".profile__edit-button");
 const addButton = document.querySelector(".profile__add-button");
 const editForm = document.querySelector("#edit-profile-form");
 const newCardForm = document.querySelector("#new-card-form");
+const avatarButton = document.querySelector(".profile__avatar-button");
+const avatarForm = document.querySelector('form[name="avatar-form"]');
 const nameInput = editForm.querySelector(".popup__input_type_name");
 const jobInput = editForm.querySelector(".popup__input_type_description");
 const deleteCardPopup = new PopupWithConfirmation("#delete-card-popup");
@@ -22,6 +24,7 @@ const userInfo = new UserInfo({
 });
 const editFormValidator = new FormValidator(defaultFormConfig, editForm);
 const newCardFormValidator = new FormValidator(defaultFormConfig, newCardForm);
+const avatarFormValidator = new FormValidator(defaultFormConfig, avatarForm);
 const api = new Api({
     baseUrl: "https://around-api.es.tripleten-services.com/v1",
     headers: {
@@ -76,6 +79,7 @@ const cardSection = new Section({
 // });
 const editProfilePopup = new PopupWithForm("#edit-popup", async (inputValues) => {
     try {
+        editProfilePopup.renderLoading(true);
         const data = {
             name: inputValues.name,
             about: inputValues.description,
@@ -91,6 +95,9 @@ const editProfilePopup = new PopupWithForm("#edit-popup", async (inputValues) =>
     catch (err) {
         console.error("Error updating profile:", err);
     }
+    finally {
+        editProfilePopup.renderLoading(false);
+    }
 });
 // const newCardPopup = new PopupWithForm("#new-card-popup", (data) => {
 //   cardSection.addItem(
@@ -103,6 +110,7 @@ const editProfilePopup = new PopupWithForm("#edit-popup", async (inputValues) =>
 // });
 const newCardPopup = new PopupWithForm("#new-card-popup", async (inputValues) => {
     try {
+        newCardPopup.renderLoading(true, "Creando...");
         const data = {
             name: inputValues["place-name"],
             link: inputValues.link,
@@ -113,6 +121,30 @@ const newCardPopup = new PopupWithForm("#new-card-popup", async (inputValues) =>
     }
     catch (err) {
         console.error("Error adding card:", err);
+    }
+    finally {
+        newCardPopup.renderLoading(false);
+    }
+});
+// avatar popup
+const avatarPopup = new PopupWithForm("#avatar-popup", async (inputValues) => {
+    try {
+        avatarPopup.renderLoading(true);
+        const newUserData = await api.updateAvatar({
+            avatar: inputValues.avatar,
+        });
+        userInfo.setUserInfo({
+            name: newUserData.name,
+            job: newUserData.about,
+            avatar: newUserData.avatar,
+        });
+        avatarPopup.close();
+    }
+    catch (err) {
+        console.error("Error updating avatar:", err);
+    }
+    finally {
+        avatarPopup.renderLoading(false);
     }
 });
 editButton.addEventListener("click", () => {
@@ -125,6 +157,10 @@ editButton.addEventListener("click", () => {
 addButton.addEventListener("click", () => {
     newCardFormValidator.resetValidation();
     newCardPopup.open();
+});
+avatarButton.addEventListener("click", () => {
+    avatarFormValidator.resetValidation();
+    avatarPopup.open();
 });
 const initApp = async () => {
     try {
@@ -149,5 +185,7 @@ imagePopup.setEventListeners();
 editProfilePopup.setEventListeners();
 newCardPopup.setEventListeners();
 deleteCardPopup.setEventListeners();
+avatarPopup.setEventListeners();
 editFormValidator.enableValidation();
 newCardFormValidator.enableValidation();
+avatarFormValidator.enableValidation();

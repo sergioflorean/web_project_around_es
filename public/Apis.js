@@ -66,4 +66,15 @@ export class Api {
         });
         await this._handleResponse(res);
     }
+    // Actualizar el avatar del usuario
+    async updateAvatar(data) {
+        const res = await fetch(`${this._baseUrl}/users/me/avatar`, {
+            method: "PATCH",
+            headers: this._headers,
+            body: JSON.stringify({
+                avatar: data.avatar,
+            }),
+        });
+        return await this._handleResponse(res);
+    }
 }

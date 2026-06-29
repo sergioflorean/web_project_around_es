@@ -24,6 +24,10 @@ After building the project with JavaScript, I started refactoring it using TypeS
 - FormValidator manages form validation and submit button states.
 - UserInfo handles displaying and updating the user's profile information.
 
+## API integration
+
+In this stage, the project was connected to the Around API. User information, initial cards, profile editing, new cards, likes, card deletion, and avatar updates are now handled through server requests using a dedicated Api class.
+
 ## Technologies used
 
 - HTML5

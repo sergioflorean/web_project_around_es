@@ -1,11 +1,13 @@
 import { Popup } from "./Popup.js";
 
-type FormSubmitHandler = (data: Record<string, string>) => void;
+type FormSubmitHandler = (data: Record<string, string>) => void | Promise<void>;
 
 export class PopupWithForm extends Popup {
   private _handleFormSubmit: FormSubmitHandler;
   private _formElement: HTMLFormElement;
   private _inputList: HTMLInputElement[];
+  private _submitButton: HTMLButtonElement;
+  private _defaultButtonText: string;
 
   constructor(popupSelector: string, handleFormSubmit: FormSubmitHandler) {
     super(popupSelector);
@@ -19,6 +21,12 @@ export class PopupWithForm extends Popup {
     this._inputList = Array.from(
       this._formElement.querySelectorAll<HTMLInputElement>(".popup__input"),
     );
+
+    this._submitButton = this._formElement.querySelector(
+      ".popup__button",
+    ) as HTMLButtonElement;
+
+    this._defaultButtonText = this._submitButton.textContent || "";
   }
 
   private _getInputValues(): Record<string, string> {
@@ -29,6 +37,14 @@ export class PopupWithForm extends Popup {
     });
 
     return inputValues;
+  }
+
+  public renderLoading(isLoading: boolean, loadingText = "Guardando..."): void {
+    if (isLoading) {
+      this._submitButton.textContent = loadingText;
+    } else {
+      this._submitButton.textContent = this._defaultButtonText;
+    }
   }
 
   public setEventListeners(): void {

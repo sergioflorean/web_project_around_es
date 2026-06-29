@@ -31,6 +31,10 @@ export interface CardFormData {
   name: string;
   link: string;
 }
+// interfaz para la respuesta de la API al actualizar el avatar
+export interface AvatarFormData {
+  avatar: string;
+}
 
 // Clase Api para interactuar con la API
 export class Api {
@@ -111,4 +115,19 @@ export class Api {
 
   await this._handleResponse<void>(res);
 }
+
+// Actualizar el avatar del usuario
+public async updateAvatar(data: AvatarFormData): Promise<ApiUserData> {
+  const res = await fetch(`${this._baseUrl}/users/me/avatar`, {
+    method: "PATCH",
+    headers: this._headers,
+    body: JSON.stringify({
+      avatar: data.avatar,
+    }),
+  });
+
+  return await this._handleResponse<ApiUserData>(res);
+}
+
+
 }
